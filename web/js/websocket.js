@@ -126,12 +126,12 @@ function addColorToAllConnectedSession(color, blockId) {
 }
 
 function lockScreen(duration) {
-    //show content
-    $('#countdown_box').show(); //countdown
-    $('.game').hide();
-    $('#scoreContainer').hide();
     //lock interface
     $.uiLock('');
+    $('.game').hide();
+    $('#scoreContainer').hide();
+    //show content
+    $('#countdown_box').show(); //countdown
     //start the countdown (unlocks interface at end)
     doCountdown(duration);
 }
@@ -157,12 +157,11 @@ function updateClock(countdown_div, new_value) {
         setTimeout("updateClock(\"countdown_div\", " + new_value + ")", 1000);
     } else {
         //finish!
-        countdownOutput.innerHTML = "";
-        $('#countdown_box').hide();
-        //unlock UI
         $.uiUnlock();
+        $('#countdown_box').hide();
         $('.game').show();
         $('#scoreContainer').show();
+        countdownOutput.innerHTML = "";
     }
 }
 
