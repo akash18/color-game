@@ -1,0 +1,81 @@
+:root {
+    --mycolor: #ff0000;
+}
+
+body {
+    background-color: #1f1f1f;
+}
+
+.modal-header {
+    background-color: #4badd1;
+}
+
+.hoverEffect:hover {
+    background-color: var(--mycolor) !important;
+}
+
+
+#countdown_box {
+    position:absolute;
+    top:32%;
+    left:32%;
+    width:400px;
+    border:3px solid lavender;
+    padding:60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#countdown_div{
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 56px;
+    color: #0088cc;
+}
+
+#countdown_msg{
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: #0088cc;
+}
+
+.header-fixed {
+    width: 100% 
+}
+
+.header-fixed > thead,
+.header-fixed > tbody,
+.header-fixed > thead > tr,
+.header-fixed > tbody > tr,
+.header-fixed > thead > tr > th,
+.header-fixed > tbody > tr > td {
+    display: block;
+}
+
+.header-fixed > tbody > tr:after,
+.header-fixed > thead > tr:after {
+    content: '';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.header-fixed > tbody {
+    overflow-y: auto;
+    height: 200px;
+}
+
+.header-fixed > tbody > tr > td,
+.header-fixed > thead > tr > th {
+    width: 25%;
+    float: left;
+}
+
+.footer {
+  bottom: 0;
+  width: 100%;
+  padding-left: 38%;
+  /* Set the fixed height of the footer here */
+  height: 30px;
+}
