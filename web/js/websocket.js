@@ -16,6 +16,7 @@ function setButtonId(button){
     $(".modal-body #flag").val(btnId);
 }
 
+// This function starts the game.
 function startGame(rows, columns) {
     $('.login').hide();
     var action = document.getElementById("flag").value;
@@ -26,6 +27,7 @@ function startGame(rows, columns) {
     sendPlayerAndGameInfo(action, rows, columns);
 }
 
+// This function sends the player and game information.
 function sendPlayerAndGameInfo(action, rows, columns) {
     var name = document.getElementById("userName").value;
     var color = getRandomColor();
@@ -41,6 +43,7 @@ function sendPlayerAndGameInfo(action, rows, columns) {
     socket.send(JSON.stringify(gameAction));
 }
 
+// This function returns the random color which is assigned to a player.
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -50,6 +53,7 @@ function getRandomColor() {
     return color;
 }
 
+// This function listens for the message and handle it accordingly. 
 function onMessage(event) {
     var data = JSON.parse(event.data);
 
@@ -101,6 +105,7 @@ function onMessage(event) {
     }
 }
 
+// This function dynamically adds the player in scoreboard.
 function addScoreRow(playerId, playerName, score, color) {
     var table = document.getElementById("scoreboard").getElementsByTagName('tbody')[0];
 
@@ -116,6 +121,7 @@ function addScoreRow(playerId, playerName, score, color) {
     $("#scoreboard tr:nth-child(" + rowCount + ") td:nth-child(3)").css("background-color", color);
 }
 
+// This function sends message to add color to all connected sessions of game. 
 function addColorToAllConnectedSession(color, blockId) {
     var clickAction = {
         action: "click",
@@ -125,6 +131,7 @@ function addColorToAllConnectedSession(color, blockId) {
     socket.send(JSON.stringify(clickAction));
 }
 
+// This function locks the screen.
 function lockScreen(duration) {
     //lock interface
     $.uiLock('');
@@ -136,7 +143,7 @@ function lockScreen(duration) {
     doCountdown(duration);
 }
 
-//function to show the countdown in seconds until the web page is unfrozen (active) again
+//This function is used to show the countdown in seconds until the web page is unfrozen (active) again
 function doCountdown(duration) {
     startNum = duration;
     var countdownOutput = document.getElementById('countdown_div');
@@ -147,7 +154,7 @@ function doCountdown(duration) {
     return false;
 }
 
-//helper function to update the timer on the web page this is frozen
+// This helper function is used to update the timer on the web page this is frozen
 function updateClock(countdown_div, new_value) {
     var countdownOutput = document.getElementById(countdown_div);
     new_value = new_value - 1;
@@ -165,7 +172,7 @@ function updateClock(countdown_div, new_value) {
     }
 }
 
-//helper function to calculate the time (seconds) remaining as minutes and seconds
+//Helper function to calculate the time (seconds) remaining as minutes and seconds
 function formatAsTime(seconds) {
     var minutes = parseInt(seconds / 60);
     seconds = seconds - (minutes * 60);
@@ -179,6 +186,8 @@ function formatAsTime(seconds) {
     return return_var;
 }
 
+// This function adds the color to block of current session and 
+// sends a message to add color to all connected session.
 function colorBlock(block) {
     if ($(block).hasClass("hoverEffect")) {
         var htmlStyles = window.getComputedStyle(document
@@ -192,17 +201,19 @@ function colorBlock(block) {
     }
 }
 
+// This function adds color to block and removes the hover effect of that block. 
 function addColorToBlock(data) {
     $('#' + data.blockId).removeClass("hoverEffect");
     $('#' + data.blockId).css('background-color', data.color);
     $('#' + data.blockId).css('color', '#000000');
 }
 
-
+// This function update the score of player in scoreboard
 function updateScoreRow(playerId, score) {
     $("#player" + playerId + " td:nth-child(4)").html(score);
 }
 
+// This function declares the winner
 function declareWinner(data) {
     $('#resultPopup #msg').html(data.msg);
     $('#resultPopup').modal('show');

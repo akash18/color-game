@@ -2,7 +2,7 @@
 package com.game.utils;
 
 /**
- * 
+ * This interface holds all the constants.
  * @author akash
  */
 public interface Constants {

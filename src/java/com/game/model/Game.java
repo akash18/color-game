@@ -8,7 +8,7 @@ import java.util.List;
 import javax.websocket.Session;
 
 /**
- *
+ * This is the model (POJO) class of Game.
  * @author akash
  */
 public class Game {
@@ -19,6 +19,7 @@ public class Game {
     private Status status =  Status.NOT_STARTED;
     private int totalBlocks;
     private int colouredBlocks;
+    // This map maintains the session corresponding to block which is colored by session.
     private Map<Integer, Session> blockIndexSessionMap = new HashMap<>();
     
     public int getId() {

@@ -14,6 +14,8 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
+ * This class is used to handle the map of player and session. 
+ * Also it adds and remove the player and session, also sends message to session (Client)
  * 
  * @author akash
  */

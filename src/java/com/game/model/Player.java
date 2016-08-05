@@ -1,7 +1,7 @@
 package com.game.model;
 
 /**
- *
+ * This is the model (POJO) class of Player.
  * @author akash
  */
 public class Player {

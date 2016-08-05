@@ -33,7 +33,7 @@ import java.util.Properties;
 import javax.websocket.RemoteEndpoint;
 
 /**
- * 
+ * This is the server class which listens for the message that comes from client and handle accordingly.
  * @author akash
  */
 @ApplicationScoped
@@ -46,6 +46,7 @@ public class WebSocketServer {
     GameHandler gameHandler;
     static final Properties prop = new Properties();
 
+    // Loads properties file
     static {
         InputStream input = WebSocketServer.class.getClassLoader().getResourceAsStream(Constants.CONFIG_FILE_NAME);
         try {
@@ -58,12 +59,11 @@ public class WebSocketServer {
 
     @OnOpen
     public void open(Session session) {
-
+        // Nothing to do while opening session
     }
 
     @OnClose
     public void close(Session session) {
-        
         playerSessionHandler.removeSession(session);
         Map<Session, Player> sessionPlayerMap = playerSessionHandler.getSessionPlayerMap();
         playerSessionHandler.removePlayer(sessionPlayerMap.get(session));
@@ -99,6 +99,11 @@ public class WebSocketServer {
         }
     }
 
+    /**
+     * This method is used to create a new game and add player to a game and update maps.
+     * @param session
+     * @param jsonMessage 
+     */
     private void createGame(Session session, JsonObject jsonMessage) {
         Game game = new Game();
         gameHandler.addGame(game, jsonMessage);
@@ -106,6 +111,12 @@ public class WebSocketServer {
         addPlayerToGame(session, jsonMessage, game);
     }
 
+    /**
+     * This methods adds a player to a game.
+     * @param session
+     * @param jsonMessage
+     * @param game 
+     */
     private void addPlayerToGame(Session session, JsonObject jsonMessage, Game game) {
         Player player = new Player(jsonMessage.getString(Constants.NAME), jsonMessage.getString(Constants.COLOR));
         game.getSessions().add(session);
@@ -114,6 +125,10 @@ public class WebSocketServer {
         playerSessionHandler.insertInMap(session, player);
     }
 
+    /**
+     * This method sends player information to current session to update scoreboard.
+     * @param session 
+     */
     private void sendPlayerInfoToSession(Session session) {
         Player player = playerSessionHandler.getSessionPlayerMap().get(session);
         JsonProvider provider = JsonProvider.provider();
@@ -127,6 +142,12 @@ public class WebSocketServer {
         playerSessionHandler.sendToSession(session, message.toString());
     }
 
+    /**
+     * This methods adds a player to a game with least number of players and 
+     * if no current game is on, then update the session with message.
+     * @param session
+     * @param jsonMessage 
+     */
     private void joinGame(Session session, JsonObject jsonMessage) {
         Game game = null;
         if (gameHandler.getGames().isEmpty()) {
@@ -169,11 +190,19 @@ public class WebSocketServer {
         }
     }
 
+    /**
+     * This methods starts the game.
+     * @param game 
+     */
     private void startTheGame(Game game) {
         game.setStatus(Status.STARTED);
         sendPopupInfoToPresentSession(game.getSessions().get(0));
     }
 
+    /**
+     * This method sends the message to a player who was waiting for another player to join a game.
+     * @param session 
+     */
     private void sendPopupInfoToPresentSession(Session session) {
         JsonProvider provider = JsonProvider.provider();
         JsonObject message = provider.createObjectBuilder()
@@ -182,6 +211,11 @@ public class WebSocketServer {
         playerSessionHandler.sendToSession(session, message.toString());
     }
 
+    /**
+     * This method returns the score array of all the connected players of a game.
+     * @param game
+     * @return 
+     */
     private JsonArrayBuilder getCurrentScoreBoardBuilder(Game game) {
         JsonArrayBuilder scoreArrayBuilder = Json.createArrayBuilder();
         game.getSessions().stream().map((s) -> playerSessionHandler.getSessionPlayerMap().get(s)).forEach((player) -> {
@@ -194,6 +228,11 @@ public class WebSocketServer {
         return scoreArrayBuilder;
     }
 
+    /**
+     * This method sends the current state of game to a new joinee.
+     * @param game
+     * @param session 
+     */
     private void sendGameStateToSesison(Game game, Session session) {
         JsonArrayBuilder coloredBlockArrayBuilder = Json.createArrayBuilder();
         for (Map.Entry entry : game.getBlockIndexSessionMap().entrySet()) {
@@ -215,6 +254,10 @@ public class WebSocketServer {
         playerSessionHandler.sendToSession(session, jsonMessage.toString());
     }
 
+    /**
+     * This methods is used to show the game to a player.
+     * @param session 
+     */
     private void showGame(Session session) {
         JsonProvider provider = JsonProvider.provider();
         JsonObject message = provider.createObjectBuilder()
@@ -223,6 +266,11 @@ public class WebSocketServer {
         playerSessionHandler.sendToSession(session, message.toString());
     }
 
+    /**
+     * This method sends the player information who currently joined the game to all the connected session (player) of game
+     * to update the scoreboard.
+     * @param session 
+     */
     private void sendNewJoineeInfoToAllConnectedSession(Session session) {
         Game game = gameHandler.getSessionGameMap().get(session);
         Player player = playerSessionHandler.getSessionPlayerMap().get(session);
@@ -242,6 +290,11 @@ public class WebSocketServer {
         });
     }
 
+    /**
+     * This method handles the click event.
+     * @param session
+     * @param jsonMessage 
+     */
     private void handleClickEvent(Session session, JsonObject jsonMessage) {
         Player player = playerSessionHandler.getSessionPlayerMap().get(session);
         Game game = gameHandler.getSessionGameMap().get(session);
@@ -256,6 +309,12 @@ public class WebSocketServer {
         }
     }
 
+    /**
+     * This method adds a color of a player who clicks on block to blocks in all the connected session of game.
+     * @param session
+     * @param player
+     * @param jsonMessage 
+     */
     private void addColorToAllConnectedSessions(Session session, Player player, JsonObject jsonMessage) {
         Game game = gameHandler.getSessionGameMap().get(session);
         JsonProvider provider = JsonProvider.provider();
@@ -276,6 +335,10 @@ public class WebSocketServer {
         });
     }
 
+    /**
+     * This method blocks the players of game when a player clicks on block.
+     * @param game 
+     */
     private void blockUsersInGame(Game game) {
         JsonProvider provider = JsonProvider.provider();
         JsonObject message = provider.createObjectBuilder()
@@ -296,6 +359,11 @@ public class WebSocketServer {
         });
     }
 
+    /**
+     * This method updates the score of player in scoreboard in all connected session (players) of game.
+     * @param game
+     * @param player 
+     */
     private void updateScore(Game game, Player player) {
         JsonProvider provider = JsonProvider.provider();
         JsonObject updateMessage = provider.createObjectBuilder()
@@ -310,6 +378,10 @@ public class WebSocketServer {
         });
     }
 
+    /**
+     * This method finds player with max score and update the player with message whether player won/lost.
+     * @param game 
+     */
     private void declareWinner(Game game) {
         int maxScore = 0;
         for (Session s : game.getSessions()) {
@@ -344,11 +416,20 @@ public class WebSocketServer {
         });
     }
 
+    /**
+     * This method removes the game.
+     * @param game 
+     */
     private void closeGame(Game game) {
         gameHandler.removeGame(game);
         game = null;
     }
 
+    /**
+     * This method checks if the game is over or not.
+     * @param game
+     * @return 
+     */
     private boolean isGameOver(Game game) {
         return (game.getColouredBlocks() + 1) == game.getTotalBlocks();
     }

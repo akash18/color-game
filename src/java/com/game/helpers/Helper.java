@@ -6,7 +6,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 /**
- *
+ * This is helper class to get jsonObject of string.
  * @author akash
  */
 public class Helper {

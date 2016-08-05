@@ -12,7 +12,8 @@ import javax.json.JsonObject;
 import javax.websocket.Session;
 
 /**
- * 
+ * This class is used to handle the game corresponding to session. 
+ * Also it is used to add, remove game.
  * @author akash
  */
 @ApplicationScoped
